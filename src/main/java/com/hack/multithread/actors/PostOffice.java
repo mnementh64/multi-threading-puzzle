@@ -12,6 +12,8 @@ public class PostOffice extends Thread {
     private PostCar[] postCarsWaiting;
     private final int nbCars;
 
+    private final Object clerkMutex = new Object();
+
     private boolean okToRun = true;
 
     public PostOffice(int nbSeats, int nbCars) {
@@ -23,7 +25,7 @@ public class PostOffice extends Thread {
 
     @Override
     public synchronized void start() {
-        System.out.println("Post office is opened !");
+        System.out.println(System.currentTimeMillis() + " : Post office is opened !");
         super.start();
     }
 
@@ -31,7 +33,7 @@ public class PostOffice extends Thread {
     public void run() {
         // Post office forever open
         while (okToRun) {
-            // if all seats are occupied, awake the clerk
+            // if all seats are occupied / all cars are parked, awake the clerk
             maybeAwakeClerk();
 
             try {
@@ -39,15 +41,15 @@ public class PostOffice extends Thread {
             } catch (InterruptedException e) {
                 okToRun = false;
                 Thread.currentThread().interrupt();
-                System.out.println("Post office is closed !");
+                System.out.println(System.currentTimeMillis() + " : Post office is closed !");
                 return;
             }
         }
 
-        System.out.println("Post office is closed !");
+        System.out.println(System.currentTimeMillis() + " : Post office is closed !");
     }
 
-    public void tryToSeat(Customer newCustomer) {
+    void tryToSeat(Customer newCustomer) {
         synchronized (seatMutex) {
             try {
                 // go on queuing if all seats are already occupied
@@ -58,18 +60,22 @@ public class PostOffice extends Thread {
                 // a seat is available - just occupy it
                 customersSit[firstFreeIndex(customersSit)] = newCustomer;
                 newCustomer.setStatus(Customer.SITTING);
+
+                maybeAwakeClerkForCustomers();
             } finally {
                 seatMutex.notifyAll();
             }
         }
     }
 
-    public void tryToPark(PostCar newPostCar) {
+    void tryToPark(PostCar newPostCar) {
         synchronized (carMutex) {
             try {
                 // a place should available - just occupy it
                 postCarsWaiting[firstFreeIndex(postCarsWaiting)] = newPostCar;
                 newPostCar.setStatus(PostCar.WAITING_FOR_PARCEL);
+
+                maybeAwakeClerkForCars();
             } finally {
                 carMutex.notifyAll();
             }
@@ -77,41 +83,72 @@ public class PostOffice extends Thread {
     }
 
     private void maybeAwakeClerk() {
+        maybeAwakeClerkForCustomers();
+        maybeAwakeClerkForCars();
+    }
+
+    private void maybeAwakeClerkForCustomers() {
         synchronized (seatMutex) {
             try {
                 // all seats occupied ? Awake the clerk !
                 if (nbSeatsOccupied() == nbSeats) {
-                    System.out.println("Clerk is awaken ! Back to work for customers.");
-                    for (Customer customer : customersSit) {
-                        customer.setStatus(Customer.POSTING);
-                        customer.prepareNextPosting();
-                    }
+                    synchronized (clerkMutex) {
+                        try {
+                            System.out.println(System.currentTimeMillis() + " : Clerk is awaken ! Back to work for customers.");
+                            for (Customer customer : customersSit) {
+                                customer.setStatus(Customer.POSTING);
+                                customer.prepareNextPosting();
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    Thread.currentThread().interrupt();
+                                    return;
+                                }
+                            }
 
-                    // erase all sit customers --> seats are free again
-                    for (int i = 0; i < nbSeats; i++) {
-                        customersSit[i] = null;
+                            // erase all sit customers --> seats are free again
+                            for (int i = 0; i < nbSeats; i++) {
+                                customersSit[i] = null;
+                            }
+                            System.out.println(System.currentTimeMillis() + " : Clerk is sleeping again after a hard work with customers.");
+                        } finally {
+                            clerkMutex.notify();
+                        }
                     }
-                    System.out.println("Clerk is sleeping again after a hard work with customers.");
                 }
             } finally {
                 seatMutex.notifyAll();
             }
         }
+    }
 
+    private void maybeAwakeClerkForCars() {
         synchronized (carMutex) {
             try {
                 // all post cars at the office ? Awake the clerk !
                 if (nbCarsAtTheOffice() == nbCars) {
-                    System.out.println("Clerk is awaken ! Back to work for post cars.");
-                    for (PostCar postCar : postCarsWaiting) {
-                        postCar.setStatus(PostCar.LOADED);
-                    }
+                    synchronized (clerkMutex) {
+                        try {
+                            System.out.println(System.currentTimeMillis() + " : Clerk is awaken ! Back to work for post cars.");
+                            for (PostCar postCar : postCarsWaiting) {
+                                postCar.setStatus(PostCar.LOADED);
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e) {
+                                    Thread.currentThread().interrupt();
+                                    return;
+                                }
+                            }
 
-                    // erase all post cars waiting --> parking places are free again
-                    for (int i = 0; i < nbCars; i++) {
-                        postCarsWaiting[i] = null;
+                            // erase all post cars waiting --> parking places are free again
+                            for (int i = 0; i < nbCars; i++) {
+                                postCarsWaiting[i] = null;
+                            }
+                            System.out.println(System.currentTimeMillis() + " : Clerk is sleeping again after a hard work with post cars.");
+                        } finally {
+                            clerkMutex.notifyAll();
+                        }
                     }
-                    System.out.println("Clerk is sleeping again after a hard work with post cars.");
                 }
             } finally {
                 carMutex.notifyAll();

@@ -13,7 +13,7 @@ public abstract class GameActor extends Thread {
     protected abstract String statusAsPrettyText(int status);
 
     public void setStatus(int status) {
-        System.out.println(getName() + " : is " + statusAsPrettyText(status));
+        System.out.println(System.currentTimeMillis() + " : " + getName() + " : is " + statusAsPrettyText(status));
         this.status = status;
     }
 

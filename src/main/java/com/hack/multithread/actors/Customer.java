@@ -5,10 +5,10 @@ import java.util.Random;
 
 public class Customer extends GameActor {
 
-    public static final int DOING_NOTHING = 0;
-    public static final int QUEUING = 1;
-    public static final int SITTING = 2;
-    public static final int POSTING = 3;
+    static final int DOING_NOTHING = 0;
+    static final int QUEUING = 1;
+    static final int SITTING = 2;
+    static final int POSTING = 3;
 
     private static final Random random = new Random(System.currentTimeMillis());
 
@@ -27,7 +27,7 @@ public class Customer extends GameActor {
         while (okToRun) {
             if (status == DOING_NOTHING) {
                 try {
-                    System.out.println(getName() + " is waiting " + durationBeforePostingAgain.getSeconds() + "s before go back to the post-office");
+                    System.out.println(System.currentTimeMillis() + " : " + getName() + " is waiting " + durationBeforePostingAgain.getSeconds() + "s before go back to the post-office");
                     sleep(durationBeforePostingAgain.toMillis());
                     setStatus(QUEUING);
                 } catch (InterruptedException e) {
@@ -58,10 +58,7 @@ public class Customer extends GameActor {
         postOffice.tryToSeat(this);
     }
 
-    /**
-     * Called by the post Office
-     */
-    public void prepareNextPosting() {
+    void prepareNextPosting() {
         setStatus(DOING_NOTHING);
 
         // compute waiting time until next posting
