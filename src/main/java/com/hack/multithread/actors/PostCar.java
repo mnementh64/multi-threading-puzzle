@@ -1,0 +1,85 @@
+package com.hack.multithread.actors;
+
+import java.time.Duration;
+import java.util.Random;
+
+public class PostCar extends GameActor {
+
+    public static final int WAITING_FOR_PARCEL = 0;
+    public static final int QUEUING = 1;
+    public static final int LOADED = 2;
+    public static final int DELIVERING = 3;
+
+    private static final Random random = new Random(System.currentTimeMillis());
+
+    private final PostOffice postOffice;
+    private Duration deliveryDuration;
+    private boolean okToRun = true;
+
+    public PostCar(String name, PostOffice postOffice) {
+        super(PostCar.WAITING_FOR_PARCEL, "Post car " + name);
+        this.postOffice = postOffice;
+        startDelivering();
+    }
+
+    @Override
+    public void run() {
+        while (okToRun) {
+            if (status == DELIVERING) {
+                try {
+                    System.out.println(getName() + " is delivering a parcel - back to the office in  " + deliveryDuration.getSeconds() + "s");
+                    sleep(deliveryDuration.toMillis());
+
+                    System.out.println(getName() + " is back to the office");
+                    setStatus(QUEUING);
+                } catch (InterruptedException e) {
+                    // to ensure thread lifecycle
+                    Thread.currentThread().interrupt();
+                    okToRun = false;
+                    return;
+                }
+            }
+
+            if (status == LOADED) {
+                startDelivering();
+            }
+
+            if (status == QUEUING) {
+                postOffice.tryToPark(this);
+            }
+
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                okToRun = false;
+                return;
+            }
+        }
+    }
+
+    /**
+     * Called by the post Office
+     */
+    public void startDelivering() {
+        setStatus(DELIVERING);
+
+        // compute delivering time
+        deliveryDuration = Duration.ofSeconds(2 + random.nextInt(8));
+    }
+
+    protected String statusAsPrettyText(int status) {
+        switch (status) {
+            case WAITING_FOR_PARCEL:
+                return "waiting for parcel";
+            case QUEUING:
+                return "queuing";
+            case LOADED:
+                return "loaded";
+            case DELIVERING:
+                return "delivering";
+            default:
+                throw new IllegalStateException("Unexpected value: " + status);
+        }
+    }
+}
