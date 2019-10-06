@@ -1,5 +1,6 @@
 package com.hack.multithread;
 
+import com.hack.multithread.actors.Clerk;
 import com.hack.multithread.actors.Customer;
 import com.hack.multithread.actors.PostCar;
 import com.hack.multithread.office.PostOffice;
@@ -14,7 +15,8 @@ public class PostOfficeSimulation {
     public static void main(String[] args) throws InterruptedException {
         System.out.println("Post-office simulation ...................");
 
-        PostOffice postOffice = new PostOffice(3, 9);
+        Clerk clerk = new Clerk();
+        PostOffice postOffice = new PostOffice(clerk, 3, 9);
         postOffice.start();
 
         // create all customers and make them alive
