@@ -2,7 +2,7 @@ package com.hack.multithread;
 
 import com.hack.multithread.actors.Customer;
 import com.hack.multithread.actors.PostCar;
-import com.hack.multithread.actors.PostOffice;
+import com.hack.multithread.office.PostOffice;
 
 import java.time.Duration;
 

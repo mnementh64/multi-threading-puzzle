@@ -1,4 +1,7 @@
-package com.hack.multithread.actors;
+package com.hack.multithread.office;
+
+import com.hack.multithread.actors.Customer;
+import com.hack.multithread.actors.PostCar;
 
 import java.util.NoSuchElementException;
 
@@ -25,7 +28,7 @@ public class PostOffice extends Thread {
 
     @Override
     public synchronized void start() {
-        System.out.println(System.currentTimeMillis() + " : Post office is opened !");
+        System.out.println(System.nanoTime() + " : Post office is opened !");
         super.start();
     }
 
@@ -41,15 +44,15 @@ public class PostOffice extends Thread {
             } catch (InterruptedException e) {
                 okToRun = false;
                 Thread.currentThread().interrupt();
-                System.out.println(System.currentTimeMillis() + " : Post office is closed !");
+                System.out.println(System.nanoTime() + " : Post office is closed !");
                 return;
             }
         }
 
-        System.out.println(System.currentTimeMillis() + " : Post office is closed !");
+        System.out.println(System.nanoTime() + " : Post office is closed !");
     }
 
-    void tryToSeat(Customer newCustomer) {
+    public void tryToSeat(Customer newCustomer) {
         synchronized (seatMutex) {
             try {
                 // go on queuing if all seats are already occupied
@@ -68,7 +71,7 @@ public class PostOffice extends Thread {
         }
     }
 
-    void tryToPark(PostCar newPostCar) {
+    public void tryToPark(PostCar newPostCar) {
         synchronized (carMutex) {
             try {
                 // a place should available - just occupy it
@@ -94,7 +97,7 @@ public class PostOffice extends Thread {
                 if (nbSeatsOccupied() == nbSeats) {
                     synchronized (clerkMutex) {
                         try {
-                            System.out.println(System.currentTimeMillis() + " : Clerk is awaken ! Back to work for customers.");
+                            System.out.println(System.nanoTime() + " : Clerk is awaken ! Back to work for customers.");
                             for (Customer customer : customersSit) {
                                 customer.setStatus(Customer.POSTING);
                                 customer.prepareNextPosting();
@@ -110,7 +113,7 @@ public class PostOffice extends Thread {
                             for (int i = 0; i < nbSeats; i++) {
                                 customersSit[i] = null;
                             }
-                            System.out.println(System.currentTimeMillis() + " : Clerk is sleeping again after a hard work with customers.");
+                            System.out.println(System.nanoTime() + " : Clerk is sleeping again after a hard work with customers.");
                         } finally {
                             clerkMutex.notify();
                         }
@@ -129,7 +132,7 @@ public class PostOffice extends Thread {
                 if (nbCarsAtTheOffice() == nbCars) {
                     synchronized (clerkMutex) {
                         try {
-                            System.out.println(System.currentTimeMillis() + " : Clerk is awaken ! Back to work for post cars.");
+                            System.out.println(System.nanoTime() + " : Clerk is awaken ! Back to work for post cars.");
                             for (PostCar postCar : postCarsWaiting) {
                                 postCar.setStatus(PostCar.LOADED);
                                 try {
@@ -144,7 +147,7 @@ public class PostOffice extends Thread {
                             for (int i = 0; i < nbCars; i++) {
                                 postCarsWaiting[i] = null;
                             }
-                            System.out.println(System.currentTimeMillis() + " : Clerk is sleeping again after a hard work with post cars.");
+                            System.out.println(System.nanoTime() + " : Clerk is sleeping again after a hard work with post cars.");
                         } finally {
                             clerkMutex.notifyAll();
                         }

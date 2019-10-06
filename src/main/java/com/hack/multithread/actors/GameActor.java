@@ -2,9 +2,9 @@ package com.hack.multithread.actors;
 
 public abstract class GameActor extends Thread {
 
-    protected int status;
+    int status;
 
-    protected GameActor(int status, String name) {
+    GameActor(int status, String name) {
         super();
         this.status = status;
         setName(name);
@@ -13,11 +13,7 @@ public abstract class GameActor extends Thread {
     protected abstract String statusAsPrettyText(int status);
 
     public void setStatus(int status) {
-        System.out.println(System.currentTimeMillis() + " : " + getName() + " : is " + statusAsPrettyText(status));
+        System.out.println(System.nanoTime() + " : " + getName() + " : is " + statusAsPrettyText(status));
         this.status = status;
-    }
-
-    public int getStatus() {
-        return status;
     }
 }

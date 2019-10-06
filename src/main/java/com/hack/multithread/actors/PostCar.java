@@ -1,16 +1,18 @@
 package com.hack.multithread.actors;
 
+import com.hack.multithread.office.PostOffice;
+
 import java.time.Duration;
 import java.util.Random;
 
 public class PostCar extends GameActor {
 
-    static final int WAITING_FOR_PARCEL = 0;
-    static final int QUEUING = 1;
-    static final int LOADED = 2;
-    static final int DELIVERING = 3;
+    public static final int WAITING_FOR_PARCEL = 0;
+    public static final int QUEUING = 1;
+    public static final int LOADED = 2;
+    public static final int DELIVERING = 3;
 
-    private static final Random random = new Random(System.currentTimeMillis());
+    private static final Random random = new Random(System.nanoTime());
 
     private final PostOffice postOffice;
     private Duration deliveryDuration;
@@ -27,10 +29,10 @@ public class PostCar extends GameActor {
         while (okToRun) {
             if (status == DELIVERING) {
                 try {
-                    System.out.println(System.currentTimeMillis() + " : " + getName() + " is delivering a parcel - back to the office in  " + deliveryDuration.getSeconds() + "s");
+                    System.out.println(System.nanoTime() + " : " + getName() + " is delivering a parcel - back to the office in  " + deliveryDuration.getSeconds() + "s");
                     sleep(deliveryDuration.toMillis());
 
-                    System.out.println(System.currentTimeMillis() + " : " + getName() + " is back to the office");
+                    System.out.println(System.nanoTime() + " : " + getName() + " is back to the office");
                     setStatus(QUEUING);
                 } catch (InterruptedException e) {
                     // to ensure thread lifecycle
