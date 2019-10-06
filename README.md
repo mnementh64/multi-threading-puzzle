@@ -1,5 +1,5 @@
-# Coding game Community challenge : Code of Kutulu
+# Solution to an academic Multi-threading problem
 
-My contribution.
+TODO : description here
 
 
