@@ -2,6 +2,9 @@ package com.hack.multithread.actors;
 
 public class Clerk {
 
+    private static long TIME_TO_RECEIVE_ONE_CUSTOMER = 1000l;
+    private static long TIME_TO_PUT_PARCEL_INTO_POST_CAR = 1000l;
+
     private final Object clerkMutex = new Object();
 
     public void receiveCustomers(Customer[] customersSit) {
@@ -12,7 +15,7 @@ public class Clerk {
                     customer.setStatus(Customer.POSTING);
                     customer.prepareNextPosting();
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(TIME_TO_RECEIVE_ONE_CUSTOMER);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         return;
@@ -37,7 +40,7 @@ public class Clerk {
                 for (PostCar postCar : postCarsWaiting) {
                     postCar.setStatus(PostCar.LOADED);
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(TIME_TO_PUT_PARCEL_INTO_POST_CAR);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         return;
