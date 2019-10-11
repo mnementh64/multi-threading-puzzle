@@ -1,10 +1,10 @@
 package com.hack.multithread.actors;
 
-public abstract class GameActor extends Thread {
+public abstract class SimulationActor extends Thread {
 
     int status;
 
-    GameActor(int status, String name) {
+    SimulationActor(int status, String name) {
         super();
         this.status = status;
         setName(name);

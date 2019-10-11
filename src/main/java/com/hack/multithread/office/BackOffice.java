@@ -25,6 +25,8 @@ class BackOffice {
                 newPostCar.setStatus(PostCar.WAITING_FOR_PARCEL);
 
                 maybeAwakeClerkForCars();
+            } catch (NoSuchElementException e) {
+                // no free place, try next time.
             } finally {
                 carMutex.notifyAll();
             }
@@ -36,7 +38,7 @@ class BackOffice {
             try {
                 // all post cars at the office ? Awake the clerk !
                 if (nbCarsAtTheOffice() == nbCars) {
-                    clerk.putParcelsIntoPostCars(postCarsWaiting);
+                    clerk.askedToPutParcelsIntoPostCars(postCarsWaiting);
                 }
             } finally {
                 carMutex.notifyAll();

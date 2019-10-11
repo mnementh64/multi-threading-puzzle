@@ -41,7 +41,7 @@ class FrontOffice {
             try {
                 // all seats occupied ? Awake the clerk !
                 if (nbSeatsOccupied() == nbSeats) {
-                    clerk.receiveCustomers(customersSit);
+                    clerk.askedToReceiveCustomers(customersSit);
                 }
             } finally {
                 seatMutex.notifyAll();

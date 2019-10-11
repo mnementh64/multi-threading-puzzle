@@ -5,7 +5,7 @@ import com.hack.multithread.office.PostOffice;
 import java.time.Duration;
 import java.util.Random;
 
-public class Customer extends GameActor {
+public class Customer extends SimulationActor {
 
     public static final int DOING_NOTHING = 0;
     public static final int QUEUING = 1;

@@ -31,7 +31,7 @@ public class PostOffice extends Thread {
             backOffice.maybeAwakeClerkForCars();
 
             try {
-                Thread.sleep(50);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 okToRun = false;
                 Thread.currentThread().interrupt();

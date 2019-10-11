@@ -5,7 +5,7 @@ import com.hack.multithread.office.PostOffice;
 import java.time.Duration;
 import java.util.Random;
 
-public class PostCar extends GameActor {
+public class PostCar extends SimulationActor {
 
     public static final int WAITING_FOR_PARCEL = 0;
     public static final int QUEUING = 1;
@@ -29,7 +29,7 @@ public class PostCar extends GameActor {
         while (okToRun) {
             if (status == DELIVERING) {
                 try {
-                    System.out.println(System.nanoTime() + " : " + getName() + " is delivering a parcel - back to the office in  " + deliveryDuration.getSeconds() + "s");
+                    System.out.println(System.nanoTime() + " : " + getName() + " is back to the office in  " + deliveryDuration.getSeconds() + "s");
                     sleep(deliveryDuration.toMillis());
 
                     System.out.println(System.nanoTime() + " : " + getName() + " is back to the office");
