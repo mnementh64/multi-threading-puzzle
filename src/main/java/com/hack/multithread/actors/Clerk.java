@@ -28,9 +28,9 @@ public class Clerk {
     public void askedToReceiveCustomers(Customer[] customersSit) {
         synchronized (clerkMutex) {
             if (currentActionType == ACTION_SLEEP) {
-                currentActionType = ACTION_RECEIVE_CUSTOMERS;
                 currentAction.interrupt();
                 currentAction = new Thread(doReceiveCustomers(customersSit));
+                currentActionType = ACTION_RECEIVE_CUSTOMERS;
                 currentAction.start();
             }
         }
@@ -39,9 +39,9 @@ public class Clerk {
     public void askedToPutParcelsIntoPostCars(PostCar[] postCarsWaiting) {
         synchronized (clerkMutex) {
             if (currentActionType != ACTION_PUT_PARCELS_IN_POST_CAR) {
-                currentActionType = ACTION_PUT_PARCELS_IN_POST_CAR;
                 currentAction.interrupt();
                 currentAction = new Thread(doPutParcelsIntoPostCars(postCarsWaiting));
+                currentActionType = ACTION_PUT_PARCELS_IN_POST_CAR;
                 currentAction.start();
             }
         }
@@ -50,7 +50,10 @@ public class Clerk {
     private Runnable makeClerkSleep() {
         return () -> {
             try {
-                Thread.sleep(100000L);
+                System.out.println(System.nanoTime() + " ******************************** CLERK IS SLEEPING");
+                while (true) {
+                    Thread.sleep(100L);
+                }
             } catch (InterruptedException e) {
                 System.out.println(System.nanoTime() + " ******************************** CLERK INTERRUPTED - was sleeping");
                 Thread.currentThread().interrupt();
