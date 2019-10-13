@@ -71,7 +71,7 @@ public class Clerk {
             System.out.println(System.nanoTime() + " : Clerk is awaken ! Back to work for customers.");
             for (int i = 0; i < customersSit.length; i++) {
                 customersSit[i].setStatus(Customer.POSTING);
-                parcelStock.increment();
+                parcelStock.add(customersSit[i].getNbParcels());
                 customersSit[i].prepareNextPosting();
                 customersSit[i] = null;
                 try {

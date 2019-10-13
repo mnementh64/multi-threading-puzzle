@@ -40,7 +40,7 @@ public class BackOffice {
         synchronized (carMutex) {
             try {
                 // all post cars at the office and enough parcels ? Awake the clerk !
-                if (nbCarsAtTheOffice() == nbCars && parcelStock.nbAvailableParcels() == nbCars) {
+                if (nbCarsAtTheOffice() == nbCars && parcelStock.nbAvailableParcels() >= nbCars) {
                     clerk.askedToPutParcelsIntoPostCars(postCarsWaiting);
                 }
             } finally {

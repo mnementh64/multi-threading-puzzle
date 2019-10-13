@@ -17,6 +17,7 @@ public class Customer extends SimulationActor {
     private final PostOffice postOffice;
     private Duration durationBeforePostingAgain;
     private boolean okToRun = true;
+    private int nbParcels;
 
     public Customer(String name, PostOffice postOffice) {
         super(Customer.BACK_TO_HOME, "Customer " + name);
@@ -65,6 +66,11 @@ public class Customer extends SimulationActor {
 
         // compute waiting time until next posting
         durationBeforePostingAgain = Duration.ofSeconds(2 + random.nextInt(8));
+        nbParcels = random.nextInt(2) + 1;
+    }
+
+    public int getNbParcels() {
+        return nbParcels;
     }
 
     protected String statusAsPrettyText(int status) {

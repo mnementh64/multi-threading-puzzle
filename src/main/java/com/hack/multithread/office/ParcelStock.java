@@ -8,10 +8,10 @@ public class ParcelStock {
         this.nbParcels = initialNumberOfParcels;
     }
 
-    public void increment() {
+    public void add(int nbParcels) {
         synchronized (stockMutex) {
-            nbParcels++;
-            System.out.println(System.nanoTime() + " : " + nbParcels + " parcels in stock");
+            this.nbParcels += nbParcels;
+            System.out.println(System.nanoTime() + " : add " + nbParcels + " parcels - now have : " + this.nbParcels + " parcels in stock");
         }
     }
 
