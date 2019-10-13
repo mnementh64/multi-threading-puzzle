@@ -1,9 +1,7 @@
 package com.hack.multithread.actors;
 
 import com.hack.multithread.office.PostOffice;
-
-import java.time.Duration;
-import java.util.Random;
+import com.hack.multithread.util.SimpleRandom;
 
 public class PostCar extends SimulationActor {
 
@@ -12,10 +10,10 @@ public class PostCar extends SimulationActor {
     public static final int LOADED = 2;
     public static final int DELIVERING = 3;
 
-    private static final Random random = new Random(System.nanoTime());
+    private static final SimpleRandom random = new SimpleRandom(8);
 
     private final PostOffice postOffice;
-    private Duration deliveryDuration;
+    private long deliveryDurationInMillis;
     private boolean okToRun = true;
 
     public PostCar(String name, PostOffice postOffice) {
@@ -29,8 +27,8 @@ public class PostCar extends SimulationActor {
         while (okToRun) {
             if (status == DELIVERING) {
                 try {
-                    System.out.println(System.nanoTime() + " :     " + getName() + " is back to the office in  " + deliveryDuration.getSeconds() + "s");
-                    sleep(deliveryDuration.toMillis());
+                    System.out.println(System.nanoTime() + " :     " + getName() + " is back to the office in  " + (deliveryDurationInMillis / 1000) + "s");
+                    sleep(deliveryDurationInMillis);
 
                     System.out.println(System.nanoTime() + " :     " + getName() + " is back to the office");
                     setStatus(QUEUING);
@@ -64,7 +62,7 @@ public class PostCar extends SimulationActor {
         setStatus(DELIVERING);
 
         // compute delivering time
-        deliveryDuration = Duration.ofSeconds(2 + random.nextInt(8));
+        deliveryDurationInMillis = 2000 + random.nextInt() * 1000;
     }
 
     @Override

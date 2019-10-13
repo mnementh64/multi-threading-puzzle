@@ -8,8 +8,6 @@ import com.hack.multithread.office.FrontOffice;
 import com.hack.multithread.office.ParcelStock;
 import com.hack.multithread.office.PostOffice;
 
-import java.time.Duration;
-
 public class PostOfficeSimulation {
 
     private static final int NB_CUSTOMERS = 10;
@@ -38,6 +36,6 @@ public class PostOfficeSimulation {
             postCar.start();
         }
 
-        Thread.sleep(Duration.ofMinutes(10).toMillis());
+        Thread.sleep(600000); // 10mn
     }
 }

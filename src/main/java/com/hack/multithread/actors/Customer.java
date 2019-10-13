@@ -1,9 +1,7 @@
 package com.hack.multithread.actors;
 
 import com.hack.multithread.office.PostOffice;
-
-import java.time.Duration;
-import java.util.Random;
+import com.hack.multithread.util.SimpleRandom;
 
 public class Customer extends SimulationActor {
 
@@ -12,10 +10,11 @@ public class Customer extends SimulationActor {
     public static final int SITTING = 2;
     public static final int POSTING = 3;
 
-    private static final Random random = new Random(System.nanoTime());
+    private static final SimpleRandom timeAtHomeRandom = new SimpleRandom(8);
+    private static final SimpleRandom nbParcelsRandom = new SimpleRandom(2);
 
     private final PostOffice postOffice;
-    private Duration durationBeforePostingAgain;
+    private long millisBeforePostingAgain;
     private boolean okToRun = true;
     private int nbParcels;
 
@@ -30,8 +29,8 @@ public class Customer extends SimulationActor {
         while (okToRun) {
             if (status == BACK_TO_HOME) {
                 try {
-                    System.out.println(System.nanoTime() + " : " + getName() + " is waiting " + durationBeforePostingAgain.getSeconds() + "s before go back to the post-office");
-                    sleep(durationBeforePostingAgain.toMillis());
+                    System.out.println(System.nanoTime() + " : " + getName() + " is waiting " + (millisBeforePostingAgain / 1000) + "s before go back to the post-office");
+                    sleep(millisBeforePostingAgain);
                     setStatus(QUEUING);
                 } catch (InterruptedException e) {
                     // to ensure thread lifecycle
@@ -65,8 +64,8 @@ public class Customer extends SimulationActor {
         setStatus(BACK_TO_HOME);
 
         // compute waiting time until next posting
-        durationBeforePostingAgain = Duration.ofSeconds(2 + random.nextInt(8));
-        nbParcels = random.nextInt(2) + 1;
+        millisBeforePostingAgain = 2000 + timeAtHomeRandom.nextInt() * 1000; // should have used Duration here but ... only java.lang !
+        nbParcels = nbParcelsRandom.nextInt() + 1;
     }
 
     public int getNbParcels() {

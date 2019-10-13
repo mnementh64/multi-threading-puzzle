@@ -3,8 +3,6 @@ package com.hack.multithread.office;
 import com.hack.multithread.actors.Clerk;
 import com.hack.multithread.actors.PostCar;
 
-import java.util.NoSuchElementException;
-
 public class BackOffice {
     private final Object carMutex = new Object();
     private PostCar[] postCarsWaiting;
@@ -28,7 +26,7 @@ public class BackOffice {
                 System.out.println(System.nanoTime() + " :     " + nbCarsAtTheOffice() + " cars waiting and " + parcelStock.nbAvailableParcels() + " parcels in stock");
 
                 maybeAwakeClerkForCars();
-            } catch (NoSuchElementException e) {
+            } catch (RuntimeException e) {
                 // no free place, try next time.
             } finally {
                 carMutex.notifyAll();
@@ -68,6 +66,6 @@ public class BackOffice {
                 return i;
             }
         }
-        throw new NoSuchElementException("No free index in this array of values (size " + arrayOfValues.length + ")");
+        throw new RuntimeException("No free index in this array of values (size " + arrayOfValues.length + ")");
     }
 }

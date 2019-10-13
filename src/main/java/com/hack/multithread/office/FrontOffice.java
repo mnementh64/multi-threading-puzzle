@@ -3,8 +3,6 @@ package com.hack.multithread.office;
 import com.hack.multithread.actors.Clerk;
 import com.hack.multithread.actors.Customer;
 
-import java.util.NoSuchElementException;
-
 public class FrontOffice {
     private final Object seatMutex = new Object();
     private Customer[] customersSit;
@@ -68,6 +66,6 @@ public class FrontOffice {
                 return i;
             }
         }
-        throw new NoSuchElementException("No free index in this array of values (size " + arrayOfValues.length + ")");
+        throw new RuntimeException("No free index in this array of values (size " + arrayOfValues.length + ")");
     }
 }
