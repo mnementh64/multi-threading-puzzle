@@ -29,10 +29,10 @@ public class PostCar extends SimulationActor {
         while (okToRun) {
             if (status == DELIVERING) {
                 try {
-                    System.out.println(System.nanoTime() + " : " + getName() + " is back to the office in  " + deliveryDuration.getSeconds() + "s");
+                    System.out.println(System.nanoTime() + " :     " + getName() + " is back to the office in  " + deliveryDuration.getSeconds() + "s");
                     sleep(deliveryDuration.toMillis());
 
-                    System.out.println(System.nanoTime() + " : " + getName() + " is back to the office");
+                    System.out.println(System.nanoTime() + " :     " + getName() + " is back to the office");
                     setStatus(QUEUING);
                 } catch (InterruptedException e) {
                     // to ensure thread lifecycle
@@ -65,6 +65,12 @@ public class PostCar extends SimulationActor {
 
         // compute delivering time
         deliveryDuration = Duration.ofSeconds(2 + random.nextInt(8));
+    }
+
+    @Override
+    public void setStatus(int status) {
+        System.out.println(System.nanoTime() + " :     " + getName() + " : is " + statusAsPrettyText(status));
+        super.setStatus(status);
     }
 
     protected String statusAsPrettyText(int status) {

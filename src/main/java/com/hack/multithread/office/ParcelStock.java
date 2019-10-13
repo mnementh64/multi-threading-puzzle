@@ -11,18 +11,18 @@ public class ParcelStock {
     public void add(int nbParcels) {
         synchronized (stockMutex) {
             this.nbParcels += nbParcels;
-            System.out.println(System.nanoTime() + " : add " + nbParcels + " parcels - now have : " + this.nbParcels + " parcels in stock");
+            System.out.println(System.nanoTime() + " : ------------ add " + nbParcels + " parcels - now have " + this.nbParcels + " parcels in stock");
         }
     }
 
     public void decrement() {
         synchronized (stockMutex) {
             nbParcels--;
-            System.out.println(System.nanoTime() + " : " + nbParcels + " parcels in stock");
+            System.out.println(System.nanoTime() + " : ------------ remove 1 parcel - now have " + nbParcels + " parcels in stock");
         }
     }
 
-    public int nbAvailableParcels() {
+    int nbAvailableParcels() {
         synchronized (stockMutex) {
             return nbParcels;
         }

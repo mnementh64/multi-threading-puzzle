@@ -73,6 +73,12 @@ public class Customer extends SimulationActor {
         return nbParcels;
     }
 
+    @Override
+    public void setStatus(int status) {
+        System.out.println(System.nanoTime() + " : " + getName() + " : is " + statusAsPrettyText(status));
+        super.setStatus(status);
+    }
+
     protected String statusAsPrettyText(int status) {
         switch (status) {
             case BACK_TO_HOME:

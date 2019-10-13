@@ -25,7 +25,7 @@ public class BackOffice {
                 // a place should available - just occupy it
                 postCarsWaiting[firstFreeIndex(postCarsWaiting)] = newPostCar;
                 newPostCar.setStatus(PostCar.WAITING_FOR_PARCEL);
-                System.out.println(System.nanoTime() + " : " + nbCarsAtTheOffice() + " cars waiting and " + parcelStock.nbAvailableParcels() + " parcels in stock");
+                System.out.println(System.nanoTime() + " :     " + nbCarsAtTheOffice() + " cars waiting and " + parcelStock.nbAvailableParcels() + " parcels in stock");
 
                 maybeAwakeClerkForCars();
             } catch (NoSuchElementException e) {

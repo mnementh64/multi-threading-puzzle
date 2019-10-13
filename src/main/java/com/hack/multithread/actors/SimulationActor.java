@@ -13,7 +13,6 @@ public abstract class SimulationActor extends Thread {
     protected abstract String statusAsPrettyText(int status);
 
     public void setStatus(int status) {
-        System.out.println(System.nanoTime() + " : " + getName() + " : is " + statusAsPrettyText(status));
         this.status = status;
     }
 }

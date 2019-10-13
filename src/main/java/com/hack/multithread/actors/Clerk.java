@@ -90,7 +90,7 @@ public class Clerk {
 
     private Runnable doPutParcelsIntoPostCars(PostCar[] postCarsWaiting) {
         return () -> {
-            System.out.println(System.nanoTime() + " : Clerk is awaken ! Back to work for post cars.");
+            System.out.println(System.nanoTime() + " :     Clerk is awaken ! Back to work for post cars.");
             for (int i = 0; i < postCarsWaiting.length; i++) {
                 postCarsWaiting[i].setStatus(PostCar.LOADED);
                 postCarsWaiting[i] = null;
@@ -104,11 +104,7 @@ public class Clerk {
                 }
             }
 
-            // erase all post cars waiting --> parking places are free again
-//            for (int i = 0; i < postCarsWaiting.length; i++) {
-//                postCarsWaiting[i] = null;
-//            }
-            System.out.println(System.nanoTime() + " : Clerk is sleeping again after a hard work with post cars.");
+            System.out.println(System.nanoTime() + " :     Clerk is sleeping again after a hard work with post cars.");
 
             sleep();
         };
