@@ -1,6 +1,5 @@
 package com.hack.multithread.office;
 
-import com.hack.multithread.actors.Clerk;
 import com.hack.multithread.actors.Customer;
 import com.hack.multithread.actors.PostCar;
 
@@ -11,9 +10,9 @@ public class PostOffice extends Thread {
 
     private boolean okToRun = true;
 
-    public PostOffice(Clerk clerk, int nbSeats, int nbCars) {
-        this.frontOffice = new FrontOffice(clerk, nbSeats);
-        this.backOffice = new BackOffice(clerk, nbCars);
+    public PostOffice(FrontOffice frontOffice, BackOffice backOffice) {
+        this.frontOffice = frontOffice;
+        this.backOffice = backOffice;
     }
 
     @Override

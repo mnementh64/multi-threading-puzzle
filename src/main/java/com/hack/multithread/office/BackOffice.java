@@ -5,14 +5,16 @@ import com.hack.multithread.actors.PostCar;
 
 import java.util.NoSuchElementException;
 
-class BackOffice {
+public class BackOffice {
     private final Object carMutex = new Object();
     private PostCar[] postCarsWaiting;
     private final Clerk clerk;
+    private final ParcelStock parcelStock;
     private final int nbCars;
 
-    BackOffice(Clerk clerk, int nbCars) {
+    public BackOffice(Clerk clerk, ParcelStock parcelStock, int nbCars) {
         this.clerk = clerk;
+        this.parcelStock = parcelStock;
         this.nbCars = nbCars;
         this.postCarsWaiting = new PostCar[nbCars]; // no car at the post office at the beginning
     }
@@ -23,6 +25,7 @@ class BackOffice {
                 // a place should available - just occupy it
                 postCarsWaiting[firstFreeIndex(postCarsWaiting)] = newPostCar;
                 newPostCar.setStatus(PostCar.WAITING_FOR_PARCEL);
+                System.out.println(System.nanoTime() + " : " + nbCarsAtTheOffice() + " cars waiting and " + parcelStock.nbAvailableParcels() + " parcels in stock");
 
                 maybeAwakeClerkForCars();
             } catch (NoSuchElementException e) {
@@ -36,8 +39,8 @@ class BackOffice {
     void maybeAwakeClerkForCars() {
         synchronized (carMutex) {
             try {
-                // all post cars at the office ? Awake the clerk !
-                if (nbCarsAtTheOffice() == nbCars) {
+                // all post cars at the office and enough parcels ? Awake the clerk !
+                if (nbCarsAtTheOffice() == nbCars && parcelStock.nbAvailableParcels() == nbCars) {
                     clerk.askedToPutParcelsIntoPostCars(postCarsWaiting);
                 }
             } finally {

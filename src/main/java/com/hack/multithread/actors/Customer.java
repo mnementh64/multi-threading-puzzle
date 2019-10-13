@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Customer extends SimulationActor {
 
-    public static final int DOING_NOTHING = 0;
+    public static final int BACK_TO_HOME = 0;
     public static final int QUEUING = 1;
     public static final int SITTING = 2;
     public static final int POSTING = 3;
@@ -19,7 +19,7 @@ public class Customer extends SimulationActor {
     private boolean okToRun = true;
 
     public Customer(String name, PostOffice postOffice) {
-        super(Customer.DOING_NOTHING, "Customer " + name);
+        super(Customer.BACK_TO_HOME, "Customer " + name);
         this.postOffice = postOffice;
         prepareNextPosting();
     }
@@ -27,7 +27,7 @@ public class Customer extends SimulationActor {
     @Override
     public void run() {
         while (okToRun) {
-            if (status == DOING_NOTHING) {
+            if (status == BACK_TO_HOME) {
                 try {
                     System.out.println(System.nanoTime() + " : " + getName() + " is waiting " + durationBeforePostingAgain.getSeconds() + "s before go back to the post-office");
                     sleep(durationBeforePostingAgain.toMillis());
@@ -61,7 +61,7 @@ public class Customer extends SimulationActor {
     }
 
     public void prepareNextPosting() {
-        setStatus(DOING_NOTHING);
+        setStatus(BACK_TO_HOME);
 
         // compute waiting time until next posting
         durationBeforePostingAgain = Duration.ofSeconds(2 + random.nextInt(8));
@@ -69,8 +69,8 @@ public class Customer extends SimulationActor {
 
     protected String statusAsPrettyText(int status) {
         switch (status) {
-            case DOING_NOTHING:
-                return "doing nothing";
+            case BACK_TO_HOME:
+                return "back to home";
             case QUEUING:
                 return "queuing";
             case SITTING:

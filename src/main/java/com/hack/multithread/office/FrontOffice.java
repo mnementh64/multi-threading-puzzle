@@ -5,13 +5,13 @@ import com.hack.multithread.actors.Customer;
 
 import java.util.NoSuchElementException;
 
-class FrontOffice {
+public class FrontOffice {
     private final Object seatMutex = new Object();
     private Customer[] customersSit;
     private final Clerk clerk;
     private final int nbSeats;
 
-    FrontOffice(Clerk clerk, int nbSeats) {
+    public FrontOffice(Clerk clerk, int nbSeats) {
         this.clerk = clerk;
         this.nbSeats = nbSeats;
         this.customersSit = new Customer[nbSeats]; // no customer at the beginning

@@ -1,5 +1,7 @@
 package com.hack.multithread.actors;
 
+import com.hack.multithread.office.ParcelStock;
+
 public class Clerk {
 
     private static long TIME_TO_RECEIVE_ONE_CUSTOMER = 2000l;
@@ -10,10 +12,12 @@ public class Clerk {
     private static int ACTION_PUT_PARCELS_IN_POST_CAR = 3;
 
     private final Object clerkMutex = new Object();
+    private final ParcelStock parcelStock;
     private int currentActionType;
     private Thread currentAction;
 
-    public Clerk() {
+    public Clerk(ParcelStock parcelStock) {
+        this.parcelStock = parcelStock;
         sleep();
     }
 
@@ -52,7 +56,7 @@ public class Clerk {
             try {
                 System.out.println(System.nanoTime() + " ******************************** CLERK IS SLEEPING");
                 while (true) {
-                    Thread.sleep(100L);
+                    Thread.sleep(100000L); // a long time
                 }
             } catch (InterruptedException e) {
                 System.out.println(System.nanoTime() + " ******************************** CLERK INTERRUPTED - was sleeping");
@@ -67,6 +71,7 @@ public class Clerk {
             System.out.println(System.nanoTime() + " : Clerk is awaken ! Back to work for customers.");
             for (int i = 0; i < customersSit.length; i++) {
                 customersSit[i].setStatus(Customer.POSTING);
+                parcelStock.increment();
                 customersSit[i].prepareNextPosting();
                 customersSit[i] = null;
                 try {
@@ -86,8 +91,10 @@ public class Clerk {
     private Runnable doPutParcelsIntoPostCars(PostCar[] postCarsWaiting) {
         return () -> {
             System.out.println(System.nanoTime() + " : Clerk is awaken ! Back to work for post cars.");
-            for (PostCar postCar : postCarsWaiting) {
-                postCar.setStatus(PostCar.LOADED);
+            for (int i = 0; i < postCarsWaiting.length; i++) {
+                postCarsWaiting[i].setStatus(PostCar.LOADED);
+                postCarsWaiting[i] = null;
+                parcelStock.decrement();
                 try {
                     Thread.sleep(TIME_TO_PUT_PARCEL_INTO_POST_CAR);
                 } catch (InterruptedException e) {
@@ -98,9 +105,9 @@ public class Clerk {
             }
 
             // erase all post cars waiting --> parking places are free again
-            for (int i = 0; i < postCarsWaiting.length; i++) {
-                postCarsWaiting[i] = null;
-            }
+//            for (int i = 0; i < postCarsWaiting.length; i++) {
+//                postCarsWaiting[i] = null;
+//            }
             System.out.println(System.nanoTime() + " : Clerk is sleeping again after a hard work with post cars.");
 
             sleep();
