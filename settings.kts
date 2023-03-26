@@ -28,6 +28,14 @@ object Project : Project({
                     mvn -f ${'$'}teamcity.build.checkoutDir/pom.xml package
                     cd ${'$'}teamcity.build.checkoutDir/target
                     jar -cvf MyFatJar.jar *
+                    echo "##teamcity[publishArtifacts '${'$'}teamcity.build.checkoutDir/target/MyFatJar.jar => MyFatJar.jar']"
+                """.trimIndent()
+            }
+
+            script {
+                name = "List target content"
+                scriptContent = """
+                    ls -ilas ${'$'}teamcity.build.checkoutDir/target
                 """.trimIndent()
             }
         }
