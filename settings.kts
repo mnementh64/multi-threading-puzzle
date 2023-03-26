@@ -21,6 +21,15 @@ object Project : Project({
                 jvmArgs = "-Xmx1024m" // JVM arguments
                 runnerArgs = "-Dmaven.test.failure.ignore=true" // Additional runner arguments
             }
+
+            script {
+                name = "Create Fat JAR"
+                scriptContent = """
+                    mvn -f ${'$'}teamcity.build.checkoutDir/pom.xml package
+                    cd ${'$'}teamcity.build.checkoutDir/target
+                    jar -cvf MyFatJar.jar *
+                """.trimIndent()
+            }
         }
     })
 })
